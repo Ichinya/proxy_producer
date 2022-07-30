@@ -1,10 +1,16 @@
+import os
+
 import mysql.connector
 from mysql.connector import errorcode
 
 from db_api.tables import TABLES
 from utils import Logger
 
-DB_NAME = 'homestead'
+DB_HOST = str(os.environ.get('DB_HOST') or os.getenv('DB_HOST') or 'localhost')
+DB_NAME = str(os.environ.get('DB_NAME') or os.getenv('DB_NAME') or 'homestead')
+DB_PORT = str(os.environ.get('DB_PORT') or os.getenv('DB_PORT') or '3306')
+DB_USER = str(os.environ.get('DB_USER') or os.getenv('DB_USER') or 'root')
+DB_PASS = str(os.environ.get('DB_PASS') or os.getenv('DB_PASS') or '')
 
 logger = Logger.get_logger(__name__)
 
@@ -29,10 +35,10 @@ class DB:
         logger.info('connect')
         # Connect to server
         self.cnx = mysql.connector.connect(
-            host="127.0.0.1",
-            port=3306,
-            user="user",
-            password="pass",
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASS,
             database=DB_NAME
         )
         # Get a cursor
@@ -77,7 +83,7 @@ class DB:
         return proxies
 
     def proxy_send_to_mq(self, id_proxy):
-        query = "UPDATE proxies SET send_to_mq=NOW() WHERE id = %(id)s"
+        query = "UPDATE proxies SET send_to_mq=NOW() WHERE is_vpn = 0 AND id = %(id)s"
         self.cur.execute(query, {'id': id_proxy})
         emp_no = self.cur.lastrowid
         self.cnx.commit()

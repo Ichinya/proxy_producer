@@ -4,6 +4,7 @@ TABLES['proxies'] = '''
 CREATE TABLE `proxies` (
     `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `proxy` VARCHAR(250) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+    `is_vpn` TINYINT(3) NOT NULL DEFAULT 0,
     `is_good` TINYINT(3) UNSIGNED NULL DEFAULT NULL,
     `latency` INT(10) NULL DEFAULT NULL,
     `speed` INT(10) NULL DEFAULT NULL,

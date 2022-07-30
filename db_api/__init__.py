@@ -1,5 +1,7 @@
 from db_api.mysql import DB
-from utils import Logger
+from dotenv import load_dotenv
+
+load_dotenv()
 
 db = DB()
 db.connect()
