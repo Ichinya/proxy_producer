@@ -8,6 +8,11 @@
 python send_to_mq.py
 ```
 
+Запуск слушателя очереди проверки прокси для записи в базу
+```shell
+python main.py
+```
+
 Парсинг источников с прокси
 ```shell
 python update_list_proxy

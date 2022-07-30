@@ -13,9 +13,12 @@ load_dotenv()
 
 # Очереди
 AMQP_URL = str(
-    os.environ['AMQP_URL'] or os.getenv('AMQP_URL') or 'amqp://localhost?connection_attempts=10&retry_delay=9')
+    os.environ['AMQP_URL'] or
+    os.getenv('AMQP_URL') or
+    'amqp://localhost?connection_attempts=10&retry_delay=9'
+)
 
 mq = MQ(logger=logger, url=AMQP_URL)
 mq.connect_to_queue('check_proxy')
 
-__all__ = ['mq']
+__all__ = ['mq', 'AMQP_URL']

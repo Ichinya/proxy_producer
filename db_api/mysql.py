@@ -83,6 +83,14 @@ class DB:
         self.cnx.commit()
         return emp_no
 
+    def save_checked_proxy(self, id_proxy, params):
+        queue = "UPDATE proxies SET check_at=NOW(), is_good=%(is_good)s WHERE id = %(id)s"
+        params["id"] = id_proxy
+        self.cur.execute(queue, params)
+        emp_no = self.cur.lastrowid
+        self.cnx.commit()
+        return emp_no
+
     def add_proxies(self, proxies):
         logger.info(f'Add proxies {len(proxies)}')
         sql = '''
