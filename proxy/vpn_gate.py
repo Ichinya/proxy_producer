@@ -15,7 +15,7 @@ except Exception as ex:
     servers = []
 
 servers = [s for s in servers[2:] if len(s) > 1]
-list_proxies = [f'socks5://vpn:vpn@{s[1]}:443' for s in servers]
+list_proxies = [{'proxy': f'socks5://vpn:vpn@{s[1]}:443', 'is_vpn': 1} for s in servers]
 logger.info(f'Result vpn {len(list_proxies)}')
 
 __all__ = ['list_proxies']

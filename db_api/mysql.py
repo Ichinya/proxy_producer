@@ -74,7 +74,7 @@ class DB:
 
     def get_check_proxies(self):
         query = '''
-        SELECT * FROM proxies WHERE send_to_mq IS NULL
+        SELECT * FROM proxies WHERE send_to_mq IS NULL AND is_vpn=0
         '''
         self.cur.execute(query)
         proxies = []
@@ -82,8 +82,23 @@ class DB:
             proxies.append(proxy)
         return proxies
 
+    def get_check_vpn(self):
+        query = '''
+         SELECT * FROM proxies WHERE send_to_mq IS NULL AND is_vpn=1
+         '''
+        self.cur.execute(query)
+        proxies = []
+        for proxy in self.cur:
+            proxies.append(proxy)
+        return proxies
+
+    def check_old_proxies(self):
+        query = "UPDATE proxies SET send_to_mq=NULL, check_at=NULL WHERE check_at < DATE_SUB(NOW(), INTERVAL 3 HOUR)"
+        self.cur.execute(query)
+        self.cnx.commit()
+
     def proxy_send_to_mq(self, id_proxy):
-        query = "UPDATE proxies SET send_to_mq=NOW() WHERE is_vpn = 0 AND id = %(id)s"
+        query = "UPDATE proxies SET send_to_mq=NOW() WHERE id = %(id)s"
         self.cur.execute(query, {'id': id_proxy})
         emp_no = self.cur.lastrowid
         self.cnx.commit()
@@ -101,13 +116,13 @@ class DB:
         logger.info(f'Add proxies {len(proxies)}')
         sql = '''
         INSERT INTO proxies 
-            (proxy, import_at) 
-        VALUES(%(proxy)s, NOW()) 
+            (proxy, is_vpn, import_at) 
+        VALUES(%(proxy)s, %(is_vpn)s, NOW()) 
         ON DUPLICATE KEY UPDATE
             import_at=NOW()
         '''
-        for proxy in proxies:
-            data_proxy = {'proxy': proxy}
+        for item in proxies:
+            data_proxy = {'proxy': item.get('proxy'), 'is_vpn': item.get('is_vpn') or 0}
             self.cur.execute(sql, data_proxy)
         self.cnx.commit()
 
