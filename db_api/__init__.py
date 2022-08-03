@@ -1,9 +1,5 @@
-from db_api.mysql import DB
-from dotenv import load_dotenv
+from db_api.database import Database
 
-load_dotenv()
-
-db = DB()
-db.connect()
+db = Database()
 
 __all__ = ['db']

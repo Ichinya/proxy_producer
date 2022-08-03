@@ -1,5 +1,7 @@
 import json
 
+from sqlalchemy.sql.functions import now
+
 from db_api import db
 from mq import mq
 from utils import Logger
@@ -11,6 +13,7 @@ def receive_msg(ch, method, properties, body):
     logger.info('received msg')
     proxy = json.loads(body.decode('utf8'))
     proxy['is_good'] = proxy.get('is_good', 0)
+    proxy['check_at'] = now()
     db.save_checked_proxy(proxy.get('id'), proxy)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 

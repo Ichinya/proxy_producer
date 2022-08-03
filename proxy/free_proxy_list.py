@@ -1,5 +1,9 @@
+from datetime import date
+
 import requests
 from bs4 import BeautifulSoup as bs
+from sqlalchemy.sql.functions import now
+
 from utils import Logger
 
 logger = Logger.get_logger(__name__)
@@ -7,7 +11,7 @@ logger = Logger.get_logger(__name__)
 
 def get_free_proxies():
     url = "https://free-proxy-list.net/"
-    logger.info('get proxy from free-proxy-list.net')
+    logger.debug('get proxy from free-proxy-list.net')
     # получаем ответ HTTP и создаем объект soup
     soup = bs(requests.get(url).content, "html.parser")
     proxies = []
@@ -17,10 +21,10 @@ def get_free_proxies():
             ip = tds[0].text.strip()
             port = tds[1].text.strip()
             host = f"{ip}:{port}"
-            proxies.append({'proxy': host})
+            proxies.append({'proxy': host, 'import_at': now()})
         except IndexError:
             continue
-    logger.info('get done')
+    logger.debug('get done')
     return proxies
 
 
