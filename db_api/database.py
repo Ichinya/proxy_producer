@@ -30,8 +30,11 @@ class Database:
 
     def __init__(self):
         logger.debug('DB Init')
-        self.create_connect()
-        self.create_all()
+        try:
+            self.create_connect()
+            self.create_all()
+        except Exception as ex:
+            logger.error(ex)
 
     def create_connect(self):
         logger.debug('DB create connect')
@@ -46,7 +49,15 @@ class Database:
         self.session.commit()
 
     def get_check_proxies(self):
-        return self.session.query(Proxy).filter(Proxy.send_to_mq.is_(None)).all()
+        return self.session.query(Proxy).filter(
+            and_(
+                Proxy.send_to_mq.is_(None),
+                or_(
+                    Proxy.check_at < date.today() - timedelta(hours=3),
+                    Proxy.check_at.is_(None)
+                )
+            )
+        ).all()
 
     def check_old_proxies(self):
         self.session.query(Proxy).filter(

@@ -1,10 +1,9 @@
 from urllib.parse import urlparse, parse_qs
 
-import requests
 from bs4 import BeautifulSoup as bs
 from sqlalchemy.sql.functions import now
 
-from utils import Logger
+from utils import Logger, get_page
 
 logger = Logger.get_logger(__name__)
 
@@ -34,7 +33,7 @@ def parse_proxies(soup):
 
 def get_free_proxies():
     logger.debug('get proxy from freeproxylist.ru')
-    soup = bs(requests.get(base_url).content, "html.parser")
+    soup = bs(get_page(base_url).content, "html.parser")
     last_page = int(find_last_page(soup))
     logger.debug('last page = ' + str(last_page))
     proxies = parse_proxies(soup)
@@ -42,7 +41,7 @@ def get_free_proxies():
     for i in range(last_page):
         logger.debug(f'parse page {i + 1}')
         url = f"{base_url}proxy-list?page={i + 1}"
-        soup = bs(requests.get(url).content, "html.parser")
+        soup = bs(get_page(url).content, "html.parser")
         proxies += parse_proxies(soup)
 
     logger.debug('get done')

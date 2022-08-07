@@ -1,11 +1,8 @@
 import json
 
-import requests
-
-from bs4 import BeautifulSoup as bs
 from sqlalchemy.sql.functions import now
 
-from utils import Logger
+from utils import Logger, get_page
 
 logger = Logger.get_logger(__name__)
 
@@ -14,7 +11,7 @@ url = 'https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/j
 logger.debug('get proxy from GH jetkai')
 list_proxies = []
 
-content = requests.get(url).content.decode('utf8')
+content = get_page(url).content.decode('utf8')
 logger.debug('get done')
 
 proxies = json.loads(content)
