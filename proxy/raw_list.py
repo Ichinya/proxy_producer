@@ -74,10 +74,7 @@ raw_lists_proxies = [
     'https://www.proxy-list.download/api/v1/get?type=http',
     'https://www.proxy-list.download/api/v1/get?type=https',
     'https://www.proxy-list.download/api/v1/get?type=socks4',
-    'https://www.proxy-list.download/api/v1/get?type=socks5',
-    'https://www.proxyscan.io/download?type=http',
-    'https://www.proxyscan.io/download?type=socks4',
-    'https://www.proxyscan.io/download?type=socks5',
+    'https://www.proxy-list.download/api/v1/get?type=socks5'
 ]
 
 logger = Logger.get_logger(__name__)

@@ -1,7 +1,7 @@
 from proxy.free_proxy_list import list_proxies as free_proxy_list
-from proxy.raw_list import list_proxies as list_p
 from proxy.freeproxylistru import list_proxies as freeproxylistru
 from proxy.jetkai import list_proxies as jetkai_proxy_list
+from proxy.raw_list import list_proxies as list_p
 
 from utils import Logger
 
