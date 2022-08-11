@@ -1,0 +1,4 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+*/10 *  * * * cd /code/ && /usr/local/bin/python3 send_to_mq.py >> /code/cron.txt 2>&1

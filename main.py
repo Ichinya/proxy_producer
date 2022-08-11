@@ -1,8 +1,8 @@
 import json
+import time
 
 from sqlalchemy.sql.functions import now
 
-from db_api import db
 from mq import mq
 from utils import Logger
 
@@ -10,6 +10,7 @@ logger = Logger.get_logger(__name__)
 
 
 def receive_msg(ch, method, properties, body):
+    from db_api import db
     logger.info('received msg')
     proxy = json.loads(body.decode('utf8'))
     proxy['is_good'] = proxy.get('is_good', 0)
@@ -27,4 +28,9 @@ def update_checked_proxy():
 
 
 if __name__ == '__main__':
-    update_checked_proxy()
+    while True:
+        try:
+            update_checked_proxy()
+        except Exception as ex:
+            logger.error(str(ex))
+            time.sleep(3)

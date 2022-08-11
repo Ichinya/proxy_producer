@@ -3,10 +3,7 @@ import re
 
 from sqlalchemy.sql.functions import now
 
-from utils import Logger
-from fake_useragent import UserAgent
-
-ua = UserAgent(verify_ssl=False)
+from utils import Logger, get_page
 
 raw_lists_proxies = [
     'http://proxysearcher.sourceforge.net/Proxy%20List.php?type=http',
@@ -80,28 +77,32 @@ raw_lists_proxies = [
 logger = Logger.get_logger(__name__)
 
 
-def get_proxies(sources, is_url=False):
+def get_proxies(db, sources, is_url=False):
     pattern = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}"
     data = ""
+    count_proxies = 0
     for source in sources:
         logger.debug(f'get proxies from {source}')
         try:
             if is_url:
-                req = Request(source, headers={'User-Agent': ua.random})
-                response = urlopen(req)
-                data += response.read().decode('utf-8') + "\n"
+                req = get_page(source)
+                data += req.content.decode('utf8') + "\n"
             else:
                 with open(source) as file:
                     data += file.read() + "\n"
             logger.debug("Processed: " + source)
         except Exception:
             logger.error("Skipping, Error Occured: " + source)
-    return re.findall(pattern, data)
+        list_proxies = list(map(lambda item: {'proxy': item, 'import_at': now()}, re.findall(pattern, data)))
+        db.add_proxies(list_proxies)
+        count_proxies += len(list_proxies)
+        data = ""
+    return count_proxies
 
 
-logger.info('Begin downloads list proxies')
-proxies = get_proxies(raw_lists_proxies, is_url=True)
-list_proxies = list(map(lambda item: {'proxy': item, 'import_at': now()}, proxies))
-logger.info(f'Обнаружено прокси - {len(list_proxies)}:')
+def proxies_to_db(db):
+    logger.info('Begin downloads list proxies')
+    get_proxies(db, raw_lists_proxies, is_url=True)
 
-__all__ = ['list_proxies']
+
+__all__ = ['proxies_to_db']

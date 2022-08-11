@@ -62,7 +62,7 @@ class Database:
     def check_old_proxies(self):
         self.session.query(Proxy).filter(
             or_(
-                Proxy.check_at < date.today() - timedelta(hours=3),
+                Proxy.check_at < date.today() - timedelta(hours=24),
                 and_(
                     Proxy.send_to_mq < date.today() - timedelta(hours=24),
                     Proxy.check_at.is_(None)

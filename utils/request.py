@@ -1,18 +1,22 @@
 import os
 
 import requests
+from FakeAgent import Fake_Agent
 from dotenv import load_dotenv
-from fake_useragent import UserAgent
+
+from utils import Logger
+
+fa = Fake_Agent()
 
 load_dotenv()
 TIMEOUT = int(os.getenv('TIMEOUT') or 5)
-ua = UserAgent(verify_ssl=False)
+
+logger = Logger.get_logger(__name__)
 
 
 def headers():  # Socket headers send metod...
-
     return {
-        "User-Agent": ua.random,
+        "User-Agent": fa.random().strip(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
         "Accept-Encoding": "gzip, deflate",
