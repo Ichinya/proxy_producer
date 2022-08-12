@@ -13,10 +13,8 @@ def receive_msg(ch, method, properties, body):
     from db_api import db
     logger.info('received msg')
     proxy = json.loads(body.decode('utf8'))
-    proxy['is_good'] = proxy.get('is_good', 0)
-    proxy['check_at'] = now()
-    proxy['send_to_mq'] = None
-    db.save_checked_proxy(proxy.get('id'), proxy)
+    checked_proxy = {'is_good': proxy.get('is_good', 0), 'check_at': now(), 'send_to_mq': None}
+    db.save_checked_proxy(proxy.get('id'), checked_proxy)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 

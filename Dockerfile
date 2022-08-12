@@ -4,8 +4,7 @@ WORKDIR /code
 ADD requirements.txt ./
 
 RUN apt-get update
-RUN apt-get -y install libpq-dev gcc
-RUN apt-get -y install cron
+RUN apt-get -y install libpq-dev gcc cron
 
 RUN pip install -r requirements.txt
 
