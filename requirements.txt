@@ -1,8 +1,9 @@
-pip==22.2.2
-python-dotenv==0.20.0
-requests~=2.28.1
-pika~=1.3.0
-beautifulsoup4~=4.11.1
-SQLAlchemy==1.4.40
-psycopg2==2.9.3
+pip==23.1.2
+python-dotenv==1.0.0
+requests==2.31.0
+pika==1.3.2
+beautifulsoup4==4.12.2
+SQLAlchemy==2.0.16
+psycopg2==2.9.6
 fake-agent~=0.1.4
+tendo==0.3.0

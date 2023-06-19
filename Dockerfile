@@ -1,11 +1,11 @@
 FROM python:3.10-slim-bullseye
 
 WORKDIR /code
-ADD requirements.txt ./
 
 RUN apt-get update
 RUN apt-get -y install libpq-dev gcc cron
 
+ADD requirements.txt ./
 RUN pip install -r requirements.txt
 
 COPY crontab /var/spool/cron/crontabs/root
